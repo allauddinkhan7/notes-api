@@ -13,21 +13,23 @@ export class AuthService {
   ) {}
 
   async registerUser(registerUserDto: RegisterDto) {
-    console.log("register user dto:", {...registerUserDto}); 
     /*  
-      check if user already exists
       hash password
+      check if user already exists
       save user to db -> this is where user service will come in picture
       generate jwt token
       return user and token in response
     */
 
 
+    
+
+
     const hash = await bcrypt.hash(registerUserDto.password, 10);
 
     const user = await this.userService.createUser({...registerUserDto, password: hash});
      //now generate token
-    const payload = { sub: user?._id };
+    const payload = { sub: user?._id }; //sub -> subject is a standard claim in JWT that is used to identify the principal that is the subject of the JWT. you can name it anything
     const token = await this.jwtService.signAsync(payload); //signAsync in express ->  jwt.sign(payload, secretKey, options)
     
     console.log("user......", token);

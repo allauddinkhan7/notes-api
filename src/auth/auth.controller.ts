@@ -20,10 +20,8 @@ export class AuthController {
   
   //----------- Register -----------------
 
-  @Post('register') // /auth/register
-  register(@Body() registerUserDto: RegisterDto) {
-    console.log('register dto in controller::::::::::::::::::::');
-    //Validation pipes can be used for better validation
+  @Post('register') 
+  register(@Body() registerUserDto: RegisterDto) {//@Body() decorator to extract data from request body
     if (!registerUserDto.fname?.trim() || !registerUserDto.lname?.trim() || !registerUserDto.email?.trim() || !registerUserDto.password?.trim()){
       return {msg: 'All fields are required'};
     }

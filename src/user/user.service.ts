@@ -10,7 +10,7 @@ import { LoginDto } from 'src/auth/dto/loginUser.dto';
 export class UserService {
     constructor(@InjectModel(User.name) private userModel: Model<User> ){}// this InjectModel is for injecting mongoose model that will help to interact with mongodb and store user data
     
- 
+    
 
 
     async createUser(registerUserDto: RegisterDto){
@@ -18,7 +18,7 @@ export class UserService {
          //create user in db logic goes here 
         return await this.userModel.create(registerUserDto);
        } catch (error) {
-        if(error.code === 11000)    
+        if(error.code === 11000)//11000 ->  duplicate key error code in mongodb    
             throw new ConflictException('User with this email already exists');
        }
         
