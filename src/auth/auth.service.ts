@@ -32,8 +32,6 @@ export class AuthService {
     const payload = { sub: user?._id }; //sub -> subject is a standard claim in JWT that is used to identify the principal that is the subject of the JWT. you can name it anything
     const token = await this.jwtService.signAsync(payload); //signAsync in express ->  jwt.sign(payload, secretKey, options)
     
-    console.log("user......", token);
-
     return {user: user, token: token, message: 'User registered successfully'};
   } //inject this method in auth controller. The @Injectable() decorator is not strictly required if the class is explicitly listed in a module’s providers.
 
