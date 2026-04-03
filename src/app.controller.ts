@@ -5,9 +5,8 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
   
-  @Get()  // / 
-  // @Get('api/product') // api/product
- 
+  @Get()  
+   
   getHello(): string {
     return this.appService.printHello(); //no business logic in controller we only handle req res cycle 
   }

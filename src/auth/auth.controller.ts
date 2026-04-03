@@ -19,10 +19,8 @@ export class AuthController {
 
   
   //----------- Register -----------------
-
   @Post('register') 
   register(@Body() registerUserDto: RegisterDto) {//@Body() decorator to extract data from request body
-    console.log("...................................", registerUserDto)
     if (!registerUserDto.fname?.trim() || !registerUserDto.lname?.trim() || !registerUserDto.email?.trim() || !registerUserDto.password?.trim()){
       return {msg: 'All fields are required'};
     }

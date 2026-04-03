@@ -11,7 +11,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService
   ) {}
-
+  
   async registerUser(registerUserDto: RegisterDto) {
     /*  
       hash password

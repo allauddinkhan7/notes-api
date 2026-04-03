@@ -5,21 +5,46 @@ import { DeleteDto } from './dto/deleteDto..dto';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
-    
-    @Post('update')// user/update
-    updateUser(@Body() updateUserDto: UpdateDto){
-        const updatedUser = this.userService.updateUser(updateUserDto)
-        return updatedUser;
+  constructor(private readonly userService: UserService) {}
+
+  @Post('update') // user/update
+  updateUser(@Body() updateUserDto: UpdateDto) {
+    const updatedUser = this.userService.updateUser(updateUserDto);
+    return updatedUser;
+  }
+
+  @Delete('delete') // user/delete
+  deleteUser(@Body() deleteUserDto: DeleteDto) {
+    const deletedUser = this.userService.deleteUser(deleteUserDto);
+    return deletedUser
+      .then((res) => ({ response: res }))
+      .catch((err) => ({ message: 'Error deleting user', error: err }));
+  }
+  /*
+    async deleteUser(@Body() deleteUserDto: DeleteDto) {
+    const deletedUser = this.userService.deleteUser(deleteUserDto);
+    try {
+      const res = await deletedUser;
+      return ({ response: res });
+    } catch (err) {
+      return ({ message: 'Error deleting user', error: err });
     }
+  }
+  
+  
+  */
 
 
-    @Delete('delete')// user/delete
-    deleteUser(@Body() deleteUserDto: DeleteDto){
-        console.log("...............................................",deleteUserDto)
-        const deletedUser = this.userService.deleteUser(deleteUserDto)
-        return {user: deletedUser, msg: 'User deleted successfully'};
-    }
+
+
+
+
+
+
+
+
+
+
 
 
 }
