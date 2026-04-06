@@ -15,11 +15,11 @@ export class AuthController {
   */
 
   //2 way to inject service in controller
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {} //readonly -> once the value is assigned in constructor cannot be reassigned.
 
   
   //----------- Register -----------------
-  @Post('register') 
+  @Post('register') //                       /auth/register
   register(@Body() registerUserDto: RegisterDto) {//@Body() decorator to extract data from request body
     if (!registerUserDto.fname?.trim() || !registerUserDto.lname?.trim() || !registerUserDto.email?.trim() || !registerUserDto.password?.trim()){
       return {msg: 'All fields are required'};

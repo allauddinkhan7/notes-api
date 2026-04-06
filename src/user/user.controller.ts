@@ -20,30 +20,6 @@ export class UserController {
       .then((res) => ({ response: res }))
       .catch((err) => ({ message: 'Error deleting user', error: err }));
   }
-  /*
-    async deleteUser(@Body() deleteUserDto: DeleteDto) {
-    const deletedUser = this.userService.deleteUser(deleteUserDto);
-    try {
-      const res = await deletedUser;
-      return ({ response: res });
-    } catch (err) {
-      return ({ message: 'Error deleting user', error: err });
-    }
-  }
-  
-  
-  */
-
-
-
-
-
-
-
-
-
-
-
 
 
 

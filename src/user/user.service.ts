@@ -16,7 +16,10 @@ export class UserService {
   async createUser(registerUserDto: RegisterDto) {
     try {
       //create user in db logic goes here
-      return await this.userModel.create(registerUserDto);
+      // return (await this.userModel.create(registerUserDto));
+      const result = await this.userModel.create(registerUserDto);
+      result.password = ""; //to hide password in response
+      return result;
     } catch (error) {
       if (error.code === 11000)
         //11000 - duplicate key error code in mongodb
@@ -28,9 +31,14 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateDto) {
     const { email, ...updateData } = updateUserDto;
-    const updatedUser = await this.userModel.findOneAndUpdate({ email }, updateData, { new: true }).select('-password');
+    const updatedUser = await this.userModel.findOneAndUpdate({ email }, updateData, { new: true }).select('-password -_id');
+    if (!updatedUser) throw new ConflictException('User with this email does not exist');
 
-    return updatedUser;
+    return {
+      user: updatedUser,
+      message: 'User updated successfully',
+    }
+    
   }
 
   //----------------Delete User-----------------

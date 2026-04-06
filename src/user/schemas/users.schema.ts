@@ -6,6 +6,8 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User {
+  //@properties
+  //field name, type, validation rules, etc. goes here
   @Prop({required: true})
   fname: string;
 
