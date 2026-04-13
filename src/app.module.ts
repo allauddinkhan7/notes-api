@@ -7,12 +7,14 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { CourseModule } from './course/course.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), // must be FIRST
     MongooseModule.forRoot(process.env.MONGODB_URL as string),
     AuthModule,
     UserModule,
+    CourseModule,
     // PaymentModule,
     // ProductModule,
     // OrderModule,

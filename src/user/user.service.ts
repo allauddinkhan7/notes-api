@@ -10,7 +10,7 @@ import { DeleteDto } from './dto/deleteDto..dto';
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {} // this InjectModel is for injecting mongoose model that will help to interact with mongodb and store user data
-  
+
   //----------------Create User-----------------
 
   async createUser(registerUserDto: RegisterDto) {
@@ -18,7 +18,7 @@ export class UserService {
       //create user in db logic goes here
       // return (await this.userModel.create(registerUserDto));
       const result = await this.userModel.create(registerUserDto);
-      result.password = ""; //to hide password in response
+      result.password = ''; //to hide password in response
       return result;
     } catch (error) {
       if (error.code === 11000)
@@ -29,16 +29,39 @@ export class UserService {
 
   //----------------Update User----------------
 
+  // async updateUser(updateUserDto: UpdateDto) {
+  //   const { email, ...updateData } = updateUserDto;
+  //   const updatedUser = await this.userModel.findOneAndUpdate({ email }, updateData, { new: true }).select('-password -_id');
+  //   if (!updatedUser) throw new ConflictException('User with this email does not exist');
+
+  //   return {
+  //     user: updatedUser,
+  //     message: 'User updated successfully',
+  //   }
+
+  // }
   async updateUser(updateUserDto: UpdateDto) {
     const { email, ...updateData } = updateUserDto;
-    const updatedUser = await this.userModel.findOneAndUpdate({ email }, updateData, { new: true }).select('-password -_id');
-    if (!updatedUser) throw new ConflictException('User with this email does not exist');
+
+    const user = await this.userModel.findOne({ email });
+
+    if (!user) {
+      throw new ConflictException('User with this email does not exist');
+    }
+
+    Object.assign(user, updateData);
+user.fname = user.fname + " "; // force change
+
+    await user.save();
+
+    // const userObj = user.toObject();
+    // delete userObj.password;
+    // delete userObj._id;
 
     return {
-      user: updatedUser,
+      // user: userObj,
       message: 'User updated successfully',
-    }
-    
+    };
   }
 
   //----------------Delete User-----------------
@@ -47,7 +70,8 @@ export class UserService {
     const { _id } = deleteUserDto;
     try {
       const deletedUser = await this.userModel.findByIdAndDelete(_id);
-      if (!deletedUser) throw new ConflictException('User with this email does not exist');
+      if (!deletedUser)
+        throw new ConflictException('User with this email does not exist');
 
       return { user: deletedUser, message: 'User deleted successfully' };
     } catch (error) {
@@ -61,5 +85,9 @@ export class UserService {
     const { email } = loginUserDto;
     const user = await this.userModel.findOne({ email });
     return user;
+  }
+
+  async getUserById(id: string) {
+    return await this.userModel.findById(id).select('-password -_id');
   }
 }

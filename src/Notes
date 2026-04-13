@@ -1,0 +1,8 @@
+/auth/register sending response 
+sendingResponse: {
+The "Passthrough" Secret
+Normally, if you use @Res(), NestJS stops handling the response and waits for you to manually call response.send(). By adding { passthrough: true },
+you are telling NestJS:
+
+"I want to touch the raw response (to set a cookie), but I still want you to handle sending the final JSON back to the frontend."
+}

@@ -11,23 +11,21 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
-  
-  
+
   //----------- Register -----------------
   async registerUser(registerUserDto: RegisterDto) {
     const hash = await bcrypt.hash(registerUserDto.password, 10);
-    const user = await this.userService.createUser({...registerUserDto,password: hash});
+    const user = await this.userService.createUser({
+      ...registerUserDto,
+      password: hash,
+    });
+    //now generate token for created user
     const payload = { sub: user?._id };
     const token = await this.jwtService.signAsync(payload); //signAsync in express ->  jwt.sign(payload, secretKey, options)
 
-    return {
-      user: user,
-      token: token,
-      message: 'User registered successfully',
-    };
+    return { user, token };
   }
-  
-  
+
   //-----------Login-----------------
   async loginUser(loginUserDto: LoginDto) {
     const user = await this.userService.getUserByEmail({ ...loginUserDto });

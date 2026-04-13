@@ -4,7 +4,7 @@ import { HydratedDocument } from 'mongoose';
 import { Role } from '../user.types';
 export type UserDocument = HydratedDocument<User>;
 
-@Schema()
+@Schema({ versionKey: '__v' })
 export class User {
   //@properties
   //field name, type, validation rules, etc. goes here
