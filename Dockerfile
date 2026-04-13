@@ -3,15 +3,17 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# install dependencies
-COPY package*.json ./
-RUN npm install
+# enable pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# copy source
+COPY package.json pnpm-lock.yaml ./
+
+# install deps
+RUN pnpm install --frozen-lockfile
+
 COPY . .
 
-# build the app
-RUN npm run build
+RUN pnpm build
 
 
 # ---------- PRODUCTION STAGE ----------
@@ -19,14 +21,15 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# copy only necessary files
-COPY package*.json ./
-RUN npm install --omit=dev
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+COPY package.json pnpm-lock.yaml ./
+
+# Copy node_modules from builder to ensure all transitive dependencies are available
+COPY --from=builder /app/node_modules ./node_modules
 
 COPY --from=builder /app/dist ./dist
 
-# expose port
 EXPOSE 3000
 
-# start app
 CMD ["node", "dist/main.js"]
