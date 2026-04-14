@@ -20,7 +20,7 @@ export class AuthService {
       password: hash,
     });
     //now generate token for created user
-    const payload = { sub: user?._id };
+    const payload = { sub: user?._id, role: user?.role };
     const token = await this.jwtService.signAsync(payload); //signAsync in express ->  jwt.sign(payload, secretKey, options)
 
     return { user, token };
@@ -36,7 +36,7 @@ export class AuthService {
       return { message: 'Invalid credentials' };
     }
 
-    const payload = { sub: user?._id };
+    const payload = { sub: user?._id, role: user?.role };
     const token = await this.jwtService.signAsync(payload);
     return { user: user, token: token, message: 'User logged in successfully' };
   }

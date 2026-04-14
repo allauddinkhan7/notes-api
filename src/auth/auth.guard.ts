@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { AuthenticatedUser } from './types/authenticated-request';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -26,7 +27,7 @@ export class AuthGuard implements CanActivate {
       });
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request['user'] = payload;
+      request['user'] = payload as AuthenticatedUser;
     } catch {
       throw new UnauthorizedException();
     }

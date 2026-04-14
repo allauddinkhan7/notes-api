@@ -12,11 +12,11 @@ export class CourseService {
   //----------------Create Course-----------------
   async createCourse(createCourseDto: CreateCourseDto) {
     try {
-      const isCourseAlreadyExist = await this.courseModel.findOne({title: createCourseDto.title});
+      // const isCourseAlreadyExist = await this.courseModel.findOne({title: createCourseDto.title});
       
-      if (isCourseAlreadyExist) {
-        throw new ConflictException('course with this title already exists');
-      }
+      // if (isCourseAlreadyExist) {
+      //   throw new ConflictException('course with this title already exists');
+      // }
       const createdCourse = await this.courseModel.create(createCourseDto);
       if (!createdCourse) {
         return { message: 'Failed to create course' };
