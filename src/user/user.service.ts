@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { RegisterDto } from 'src/auth/dto/registerUser.dto';
 import { User } from './schemas/users.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UpdateDto } from './dto/updateUser.dto';
 import { LoginDto } from 'src/auth/dto/loginUser.dto';
 import { DeleteDto } from './dto/deleteDto..dto';
@@ -10,20 +10,16 @@ import { DeleteDto } from './dto/deleteDto..dto';
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {} // this InjectModel is for injecting mongoose model that will help to interact with mongodb and store user data
-
+  
   //----------------Create User-----------------
 
   async createUser(registerUserDto: RegisterDto) {
     try {
-      //create user in db logic goes here
-      // return (await this.userModel.create(registerUserDto));
       const result = await this.userModel.create(registerUserDto);
-      result.password = ''; //to hide password in response
+      result.password = ''; 
       return result;
     } catch (error) {
-      if (error.code === 11000)
-        //11000 - duplicate key error code in mongodb
-        throw new ConflictException('User with this email already exists');
+      if (error.code === 11000) throw new ConflictException('User with this email already exists');
     }
   }
 
@@ -50,7 +46,7 @@ export class UserService {
     }
 
     Object.assign(user, updateData);
-user.fname = user.fname + " "; // force change
+    user.fname = user.fname + " "; // force change
 
     await user.save();
 
@@ -87,7 +83,34 @@ user.fname = user.fname + " "; // force change
     return user;
   }
 
+  async updateRefreshToken(userId: string | Types.ObjectId, refreshToken: string) {
+    return await this.userModel.findByIdAndUpdate(
+      userId,
+      { refreshToken },
+      { new: true },
+    );
+  }
+
   async getUserById(id: string) {
     return await this.userModel.findById(id).select('-password -_id');
   }
+
+
+
+
+  async removeRefreshToken(userId: string) {
+  return await this.userModel.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        refreshToken: undefined, // MongoDB will remove the field or set to null
+      },
+    },
+    { new: true }
+  );
 }
+
+
+
+}
+

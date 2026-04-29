@@ -20,7 +20,7 @@ export class AuthController {
   /*
   authService: AuthService;
   constructor(authService: AuthService) {
-    this.authService = authService;
+    this.authService = authService
   }
   */
 
@@ -37,20 +37,28 @@ export class AuthController {
     @Res({ passthrough: true }) response: express.Response,
   ) {
     //@Body() decorator to extract data from request body
-    if (!registerUserDto.fname?.trim() || !registerUserDto.lname?.trim() || !registerUserDto.email?.trim() || !registerUserDto.password?.trim()) {
+    if (
+      !registerUserDto.fname?.trim() ||
+      !registerUserDto.lname?.trim() ||
+      !registerUserDto.email?.trim() ||
+      !registerUserDto.password?.trim()
+    ) {
       return { msg: 'All fields are required' };
     }
     //sending Response Notes.sendingResponse
-    const result = await this.authService.registerUser(registerUserDto);
-    const example = 10;
-    response.cookie('access_token', result.token, {
+    const result = await this.authService.registerUser(registerUserDto); //user accessToken refreshToken
+
+    const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true in production
-      sameSite: 'strict',
-    });
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict' as const,
+    };
+
+    response.cookie('refreshToken', result.refreshToken, cookieOptions);
     return {
       message: 'User registered successfully',
       user: result.user,
+      accessToken: result.accessToken,
     };
   }
 
@@ -58,9 +66,7 @@ export class AuthController {
 
   @Post('login') //                       /auth/login
   async login(@Body() loginUserDto: LoginDto) {
-    if (!loginUserDto.email?.trim() || !loginUserDto.password?.trim()) {
-      return { msg: 'All fields are required' };
-    }
+    if (!loginUserDto.email?.trim() || !loginUserDto.password?.trim()) return { msg: 'All fields are required' };
 
     const token = await this.authService.loginUser(loginUserDto);
     return token;
@@ -69,11 +75,14 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('profile')
   async getProfile(@Request() req: any) {
+    console.log("req.......................", req)
     const userId = req.user.sub;
+
     const fetchedUser = await this.userService.getUserById(userId);
     return { msg: 'User Fetched Successfully', fetchedUser };
   }
 
+  
   // router.route("/change-password").post(verifyJwt, changeCurrentPassword);
   // @Post('changePassword')
 }

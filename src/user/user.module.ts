@@ -3,10 +3,11 @@ import { UserService } from './user.service';
 import { User, UserSchema } from './schemas/users.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserController } from './user.controller';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
-  providers: [UserService],
+  providers: [UserService, AuthGuard],
   exports: [UserService], //when using it in other modules like AuthModule 
   controllers: [UserController], // Modules are isolated in nestJs so you have to explicitly export to use it another module (like AuthModule).
 })
